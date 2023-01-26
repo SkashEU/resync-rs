@@ -7,7 +7,15 @@ mod ios;
 mod android;
 
 pub struct StringResource {
-    resources: HashMap<String, Vec<StringValue>>,
+    pub resources: HashMap<String, Vec<StringValue>>,
+}
+
+impl StringResource {
+    pub fn new(resources: HashMap<String, Vec<StringValue>>) -> StringResource {
+        StringResource {
+            resources
+        }
+    }
 }
 
 impl StringResource {
@@ -21,8 +29,17 @@ impl StringResource {
 }
 
 pub struct StringValue {
-    key: String,
-    value: String,
+    pub key: String,
+    pub value: String,
+}
+
+impl StringValue {
+    pub fn new(key: String, value: String) -> StringValue {
+        StringValue {
+            key,
+            value,
+        }
+    }
 }
 
 pub trait StringResourceParser {

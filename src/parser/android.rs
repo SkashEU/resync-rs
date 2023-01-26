@@ -1,8 +1,11 @@
+use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::path::Path;
 use log::{error, info};
-use crate::parser::{StringResource, StringResourceParser};
+use quick_xml::events::Event;
+use quick_xml::Reader;
+use crate::parser::{StringResource, StringResourceParser, StringValue};
 use crate::util::error;
 
 pub struct AndroidStringResourceParser {
@@ -38,9 +41,42 @@ impl StringResourceParser for AndroidStringResourceParser {
         let path = self.validate_path()?;
         let content = fs::read_to_string(path)?;
 
-        info!("Successfully read content of provided file: {}", &content);
+        let mut reader = Reader::from_str(&content);
+        reader.trim_text(true);
 
-        // Placeholder
-        Err(Box::new(error::Error::InvalidPath))
+        let mut buf = Vec::new();
+        let mut keys: Vec<String> = vec![];
+        let mut values: Vec<String> = vec![];
+
+        loop {
+            match reader.read_event_into(&mut buf) {
+                Ok(Event::Start(e)) => {
+                    for attribute in e.attributes() {
+                        let value = String::from_utf8(attribute?.value.into_owned())?;
+                        info!("Found Key: {:?}",  &value);
+                        keys.push(value);
+                    }
+                }
+                Ok(Event::Text(e)) => {
+                    let value = e.unescape().unwrap().into_owned();
+                    info!("Found Value: {:?}",  &value);
+                    values.push(value);
+                }
+                Ok(Event::Eof) => break,
+                _ => (),
+            }
+            buf.clear();
+        }
+
+        let mut map: HashMap<String, Vec<StringValue>> = HashMap::new();
+
+        let values: Vec<StringValue> = keys.iter().zip(values).map(|(key, value)| {
+            StringValue::new(key.to_owned(), value)
+        }).collect();
+
+        // Prob adding grouping by comments.
+        map.insert("".to_owned(), values);
+
+        Ok(StringResource::new(map))
     }
 }
