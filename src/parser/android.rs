@@ -5,7 +5,7 @@ use std::path::Path;
 use log::{error, info};
 use quick_xml::events::Event;
 use quick_xml::Reader;
-use crate::parser::{StringResource, StringResourceParser, StringValue};
+use crate::parser::{DELIMITER, StringResource, StringResourceParser, StringValue};
 use crate::util::error;
 
 pub struct AndroidStringResourceParser {
@@ -70,9 +70,12 @@ impl StringResourceParser for AndroidStringResourceParser {
 
         let mut map: HashMap<String, Vec<StringValue>> = HashMap::new();
 
-        let values: Vec<StringValue> = keys.iter().zip(values).map(|(key, value)| {
-            StringValue::new(key.to_owned(), value)
-        }).collect();
+        let values: Vec<StringValue> = keys.iter()
+            .zip(values)
+            .map(|(key, value)| {
+                let cleared_key = key.replace('_', DELIMITER);
+                StringValue::new(cleared_key, value)
+            }).collect();
 
         // Prob adding grouping by comments.
         map.insert("".to_owned(), values);

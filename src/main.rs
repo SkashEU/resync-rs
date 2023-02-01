@@ -3,7 +3,6 @@ mod cli;
 mod util;
 
 use std::error::Error;
-use std::iter::zip;
 use clap::Parser;
 use log::{error, info};
 use pretty_env_logger::env_logger;

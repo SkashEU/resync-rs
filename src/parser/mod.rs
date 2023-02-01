@@ -6,6 +6,8 @@ use crate::parser::ios::IosStringResourceParser;
 mod ios;
 mod android;
 
+const DELIMITER: &str = "-";
+
 pub struct StringResource {
     pub resources: HashMap<String, Vec<StringValue>>,
 }
