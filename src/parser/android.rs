@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use log::{info};
+use log::info;
 
 use crate::parser::{DELIMITER, StringResourceParser, StringValue};
 use crate::util::error;
@@ -35,7 +35,7 @@ impl StringResourceParser for AndroidStringResourceParser {
         let cleared_key = key.replace('_', DELIMITER).replace("<string name=\"", "");
         let cleared_value = value.replace("</string>", "");
 
-        Ok(StringValue::new(cleared_key, cleared_value))
+        Ok(StringValue::new(cleared_key.trim().to_owned(), cleared_value.trim().to_owned()))
     }
 
     fn get_file_extension(&self) -> &'static str {

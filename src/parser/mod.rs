@@ -1,22 +1,23 @@
-mod ios;
-mod android;
-mod csv;
-
 use std::collections::HashMap;
 use std::error::Error;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
+use console::style;
 
 use serde::Deserialize;
 
 use crate::parser::android::AndroidStringResourceParser;
 use crate::parser::csv::CSVStringResourceParser;
 use crate::parser::ios::IosStringResourceParser;
-
+use crate::Platform;
 use crate::util::error;
 
-const DELIMITER: &str = "-";
+mod ios;
+mod android;
+mod csv;
+
+pub const DELIMITER: &str = "-";
 
 #[derive(Debug)]
 pub struct StringResource {
@@ -32,16 +33,16 @@ impl StringResource {
 }
 
 impl StringResource {
-    pub fn from_android(path: &String) -> Result<StringResource, Box<dyn Error>> {
-        AndroidStringResourceParser::new().parse(path)
-    }
-
-    pub fn from_ios(path: &String) -> Result<StringResource, Box<dyn Error>> {
-        IosStringResourceParser::new().parse(path)
-    }
-
-    pub fn from_csv(path: &String) -> Result<StringResource, Box<dyn Error>> {
-        CSVStringResourceParser::new().parse(path)
+    pub fn from_path(path: &String, platform: &Platform) -> Result<StringResource, Box<dyn Error>> {
+        println!(
+            "{} Parsing strings...",
+            style("[1/2]").bold().dim().blue()
+        );
+        return match platform {
+            Platform::Android => AndroidStringResourceParser::new().parse(path),
+            Platform::Ios => IosStringResourceParser::new().parse(path),
+            Platform::CSV => CSVStringResourceParser::new().parse(path)
+        };
     }
 }
 

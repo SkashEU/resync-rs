@@ -30,7 +30,7 @@ impl StringResourceParser for IosStringResourceParser {
         let cleared_key = key.replace('.', DELIMITER);
         let cleared_value = value.replace(';', "");
 
-        Ok(StringValue::new(cleared_key, cleared_value))
+        Ok(StringValue::new(cleared_key.trim().to_owned(), cleared_value.trim().to_owned()))
     }
 
     fn get_file_extension(&self) -> &'static str {
