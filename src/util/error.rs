@@ -3,8 +3,7 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug)]
 pub enum Error {
     InvalidPath,
-    InvalidAndroidStringFile,
-    InvalidIosStringFile
+    InvalidStringFile
 }
 
 impl Display for Error {
