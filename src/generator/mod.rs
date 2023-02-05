@@ -34,7 +34,7 @@ pub trait StringResourceGenerator {
     fn generate(&self, output_path: &String, resource: StringResource) -> Result<(), Box<dyn Error>> {
         let path = PathBuf::from(output_path).join(self.get_file_name());
         let mut file = File::create(path)?;
-        
+
         if let Some(header) = self.create_header() {
             info!("Writing header: {}", &header);
             file.write_all(header.as_bytes())?;

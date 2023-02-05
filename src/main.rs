@@ -94,14 +94,14 @@ pub enum Platform {
 }
 
 impl FromStr for Platform {
-    type Err = Box<dyn Error>;
+    type Err = util::error::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "csv" => Ok(CSV),
             "xml" => Ok(Android),
             "strings" => Ok(Ios),
-            _ => Err(UnsupportedFile.into())
+            _ => Err(UnsupportedFile)
         }
     }
 }
