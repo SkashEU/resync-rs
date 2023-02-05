@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::Write;
-use std::path::Path;
+use std::path::PathBuf;
 use console::style;
 use indicatif::ProgressBar;
 
@@ -32,13 +32,9 @@ pub fn generate(output_path: &String, resource: StringResource, platform: Platfo
 
 pub trait StringResourceGenerator {
     fn generate(&self, output_path: &String, resource: StringResource) -> Result<(), Box<dyn Error>> {
-        let path = Path::new(output_path);
-        let mut file = if !path.ends_with(self.get_file_name()) {
-            File::create(output_path.to_owned() + self.get_file_name())?
-        } else {
-            File::create(output_path)?
-        };
-
+        let path = PathBuf::from(output_path).join(self.get_file_name());
+        let mut file = File::create(path)?;
+        
         if let Some(header) = self.create_header() {
             info!("Writing header: {}", &header);
             file.write_all(header.as_bytes())?;

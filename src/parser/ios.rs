@@ -18,19 +18,13 @@ impl StringResourceParser for IosStringResourceParser {
         }
 
         let content = line.replace('\"', "");
-        let split = content.split('=').collect::<Vec<_>>();
 
-        if split.len() != 2 {
-            return Err(Box::new(error::Error::InvalidStringFile));
-        }
+        let (key, value) = content.split_once('=').ok_or(error::Error::InvalidStringFile)?;
 
-        let key = *split.get(0).ok_or(error::Error::InvalidStringFile)?;
-        let value = *split.get(1).ok_or(error::Error::InvalidStringFile)?;
+        let cleared_key = key.replace('.', DELIMITER).trim().to_owned();
+        let cleared_value = value.replace(';', "").trim().to_owned();
 
-        let cleared_key = key.replace('.', DELIMITER);
-        let cleared_value = value.replace(';', "");
-
-        Ok(StringValue::new(cleared_key.trim().to_owned(), cleared_value.trim().to_owned()))
+        Ok(StringValue::new(cleared_key, cleared_value))
     }
 
     fn get_file_extension(&self) -> &'static str {

@@ -1,5 +1,5 @@
 use crate::generator::StringResourceGenerator;
-use crate::parser::StringValue;
+use crate::parser::{DELIMITER, StringValue};
 
 pub struct CSVStringResourceGenerator;
 
@@ -11,7 +11,8 @@ impl CSVStringResourceGenerator {
 
 impl StringResourceGenerator for CSVStringResourceGenerator {
     fn generate_line(&self, value: &StringValue) -> String {
-        format!("{},{}\n", value.key, value.value)
+        let key = value.key.replace(DELIMITER, "-");
+        format!("{},{}\n", key, value.value)
     }
 
     fn create_header(&self) -> Option<String> {
