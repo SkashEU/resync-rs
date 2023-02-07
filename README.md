@@ -24,3 +24,8 @@ resync --help
 | sync     | Generate a string resource file for the other platform (iOS to Android or Android to iOS) |
 | convert  | Convert between resource string file formats                                              |
 | generate | Generate a CSV file which can be used to generate platform string resource files          |
+
+
+## TODO:
+- Add support for format specifiers
+- Add support for comments
