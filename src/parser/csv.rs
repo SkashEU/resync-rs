@@ -14,7 +14,10 @@ impl CSVStringResourceParser {
 impl StringResourceParser for CSVStringResourceParser {
     fn parse(&self, path: &String) -> Result<StringResource, Box<dyn Error>> {
         let path = self.validate_path(path)?;
-        let mut reader = csv::Reader::from_path(path)?;
+
+        let mut reader = csv::ReaderBuilder::new()
+            .delimiter(b';')
+            .from_path(path)?;
 
         let string_resources: Vec<StringValue> = reader.deserialize()
             .filter_map(Result::ok)
